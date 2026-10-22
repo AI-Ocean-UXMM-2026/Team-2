@@ -225,7 +225,7 @@ export function DriverWorkspace() {
             <Button
               disabled={
                 busy ||
-                details.trim().length < 10 ||
+                !details.trim() ||
                 !choices.length ||
                 (kind === "ATTEMPT" && !delivery)
               }

@@ -196,7 +196,6 @@ export function CustomerWorkspace() {
                     <Textarea
                       id="report-description"
                       rows={5}
-                      minLength={10}
                       maxLength={4000}
                       required
                       value={description}
@@ -204,7 +203,7 @@ export function CustomerWorkspace() {
                       placeholder="For example: My order is delayed and I have not had an update."
                     />
                   </Field>
-                  {description.length >= 10 && (
+                  {description.trim().length > 0 && (
                     <Text as="p" size="1" color="gray">
                       Rule preview: {CATEGORY_LABELS[preview.category]}
                       {preview.needsReview ? " · staff review required" : ""}
@@ -226,7 +225,7 @@ export function CustomerWorkspace() {
                       className="block w-full rounded-md border border-dashed border-input p-3 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:font-medium"
                     />
                   </Field>
-                  <Button disabled={busy || description.trim().length < 10}>
+                  <Button disabled={busy || !description.trim()}>
                     {busy ? "Saving…" : "Submit report"}
                   </Button>
                 </form>

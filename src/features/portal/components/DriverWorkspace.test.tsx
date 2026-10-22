@@ -75,7 +75,7 @@ it("submits a route condition with its actual occurrence time rather than curren
   expect(screen.queryByRole("option", { name: /CURRENT-PACKAGE/ })).not.toBeInTheDocument();
   fireEvent.keyDown(screen.getByRole("listbox"), { key: "Escape" });
   fireEvent.change(screen.getByLabelText("What happened?"), {
-    target: { value: "Road congestion affected the earlier assigned route." },
+    target: { value: "Traffic" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Submit report" }));
   await waitFor(() => expect(command).toHaveBeenCalled());
@@ -83,6 +83,7 @@ it("submits a route condition with its actual occurrence time rather than curren
     "submit",
     expect.objectContaining({
       kind: "CONDITION",
+      details: "Traffic",
       scopeIds: [],
       occurredAt: new Date(local).toISOString(),
     }),

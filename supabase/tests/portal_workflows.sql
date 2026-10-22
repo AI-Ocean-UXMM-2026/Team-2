@@ -33,6 +33,23 @@ do $$ begin
  if (select count(*) from public.staff_profiles)>0 then raise exception 'Customer cannot acquire staff membership'; end if;
 end $$;
 insert into portal_test_ids select 'order_a',d.id from public.delivery_jobs d join public.sellers s on s.id=d.seller_id where s.external_seller_id='demo-lotus' and d.status='IN_TRANSIT' limit 1;
+-- A short description is valid; blank and oversized descriptions remain invalid.
+select public.portal_command('submit_report',jsonb_build_object('deliveryId',(select value from portal_test_ids where key='order_a'),'description','?'));
+do $$ begin
+ if not exists(select 1 from public.complaints where customer_user_id=auth.uid() and customer_description='?') then raise exception 'Short customer description was not saved'; end if;
+ begin
+  perform public.portal_command('submit_report',jsonb_build_object('deliveryId',(select value from portal_test_ids where key='order_a'),'description','   '));
+  raise exception 'Blank customer description unexpectedly accepted';
+ exception when raise_exception then
+  if sqlerrm <> 'Describe the issue using up to 4000 characters' then raise; end if;
+ end;
+ begin
+  perform public.portal_command('submit_report',jsonb_build_object('deliveryId',(select value from portal_test_ids where key='order_a'),'description',repeat('x',4001)));
+  raise exception 'Oversized customer description unexpectedly accepted';
+ exception when raise_exception then
+  if sqlerrm <> 'Describe the issue using up to 4000 characters' then raise; end if;
+ end;
+end $$;
 insert into portal_test_ids select 'report',(public.portal_command('submit_report',jsonb_build_object('deliveryId',(select value from portal_test_ids where key='order_a'),'description','My order is delayed and I request a refund.'))->>'reportId')::uuid;
 insert into portal_test_ids select 'exception',exception_id from public.complaints where id=(select value from portal_test_ids where key='report');
 do $$ begin

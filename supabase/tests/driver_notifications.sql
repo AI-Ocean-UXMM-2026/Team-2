@@ -33,7 +33,7 @@ do $$ begin
   raise exception 'Expected unassigned historical delivery denial';
  exception when insufficient_privilege then null; end;
 end $$;
-insert into driver_test_ids select 'condition',(public.driver_command('submit',jsonb_build_object('kind','CONDITION','category','ROAD_CLOSURE','occurredAt',now()-interval '2 hours','details','Road closure affects the driver route.'))->>'reportId')::uuid;
+insert into driver_test_ids select 'condition',(public.driver_command('submit',jsonb_build_object('kind','CONDITION','category','ROAD_CLOSURE','occurredAt',now()-interval '2 hours','details','Closed'))->>'reportId')::uuid;
 do $$ begin
  if exists(select 1 from public.notification_reviews) or exists(select 1 from public.customer_delivery_updates) then raise exception 'Driver sees private review or customer publication'; end if;
  begin
