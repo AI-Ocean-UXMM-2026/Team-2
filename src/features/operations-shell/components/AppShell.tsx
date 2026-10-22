@@ -20,8 +20,8 @@ const NAV = [
   { to: "/overview", label: "Overview", Icon: LayoutDashboard },
   { to: "/dashboard", label: "Exception inbox", Icon: Inbox },
   { to: "/requests", label: "Customer complaints", Icon: MessageSquare },
-  { to: "/analytics", label: "Complaint analytics", Icon: ChartNoAxesCombined },
   { to: "/conditions", label: "Route conditions", Icon: Inbox },
+  { to: "/analytics", label: "Complaint analytics", Icon: ChartNoAxesCombined },
   { to: "/demo/events", label: "Event simulator", Icon: FlaskConical },
 ];
 
