@@ -43,6 +43,18 @@ npm run dev                  # http://localhost:3000
 
 No service-role key is needed: reads go through row-level security and every write goes through guarded, audited database functions.
 
+### Netlify deployment
+
+Set the variables above in Netlify's environment settings. Next.js intentionally embeds
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in browser assets; use a Supabase publishable
+key, never a secret or service-role key. `GROQ_API_KEY` stays server-only.
+
+`netlify.toml` excludes only the public Supabase publishable key and the non-secret
+`GROQ_MODEL` identifier from secrets scanning. Scanning remains enabled for API
+keys and other secrets. Environment files are ignored except for `.env.example`,
+which contains placeholders. If a subsequent scan flags another value, inspect
+the reported files and remove any exposed credentials rather than disabling scanning.
+
 ### Database
 
 For a new, empty Supabase project:
