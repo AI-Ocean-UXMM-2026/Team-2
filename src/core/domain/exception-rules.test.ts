@@ -77,6 +77,13 @@ describe("read-only next-action guidance", () => {
         .breached,
     ).toBe(false);
     expect(EXCEPTION_TRANSITIONS["RESOLVED"]).toEqual(["REOPENED"]);
+    // A HIGH exception (8h SLA) opened 7h ago has one hour left.
+    const sla = exceptionSla(
+      { detected_at: new Date(now - 7 * 36e5).toISOString(), priority: "HIGH", status: "NEW" },
+      now,
+    );
+    expect(sla.breached).toBe(false);
+    expect(sla.remainingMs).toBe(36e5);
     expect(Object.keys(EXCEPTION_TRANSITIONS)).not.toContain("AWAITING_CARRIER");
   });
 });

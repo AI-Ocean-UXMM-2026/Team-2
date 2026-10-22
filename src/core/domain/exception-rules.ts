@@ -130,12 +130,14 @@ export function exceptionSla(
   e: { detected_at: string; priority: string; status: string },
   now: number,
 ) {
-  if (e.status === "RESOLVED") return { label: "Closed", breached: false };
+  if (e.status === "RESOLVED") return { label: "Closed", breached: false, remainingMs: Infinity };
   const hours =
     ({ CRITICAL: 2, HIGH: 8, MEDIUM: 24, LOW: 48 } as Record<string, number>)[e.priority] ?? 24;
   const left = Date.parse(e.detected_at) + hours * 36e5 - now;
   return {
     label: `${left < 0 ? "Overdue " : ""}${Math.floor(Math.abs(left) / 36e5)}h ${Math.floor(Math.abs(left) / 60000) % 60}m`,
     breached: left < 0,
+    /** Time left before the SLA is breached; negative once overdue. */
+    remainingMs: left,
   };
 }

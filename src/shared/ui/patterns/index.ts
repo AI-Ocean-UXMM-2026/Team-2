@@ -10,7 +10,16 @@ export { SectionTabs } from "./section-tabs";
 export { DataTable, type Column } from "./data-table";
 export { FilterBar, SearchField } from "./filter-bar";
 export { EmptyState } from "./empty-state";
-export { ButtonRow, LinkList, LinkRow, MetaLine, RecordSummary, StatList, Timeline } from "./lists";
+export {
+  ButtonRow,
+  IconFact,
+  LinkList,
+  LinkRow,
+  MetaLine,
+  RecordSummary,
+  StatList,
+  Timeline,
+} from "./lists";
 export { Field, Notice } from "./form";
 export { OptionSelect, type Option } from "./option-select";
 export { BackLink, FactGrid, KeyValueList, PhotoThumb } from "./details";

@@ -2,9 +2,19 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Badge, DropdownMenu, Heading, Text } from "@radix-ui/themes";
-import { Check, ChevronDown } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Clock,
+  FileText,
+  Package,
+  Store,
+  Truck,
+  UserRound,
+  UserRoundCog,
+} from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Notice, Panel as PatternPanel, ProductMark } from "@/shared/ui/patterns";
+import { IconFact, Notice, Panel as PatternPanel, ProductMark } from "@/shared/ui/patterns";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { CustomerAccountForm } from "@/features/customer-auth/components/CustomerAccountForm";
 import { useQueryClient } from "@tanstack/react-query";
@@ -105,6 +115,57 @@ export function DueLabel({ sla }: { sla: { label: string; breached: boolean } })
         {sla.label.replace(/^Overdue /, "")}
       </Text>
     </div>
+  );
+}
+/** Facts that identify a ticket, each with the same icon on every page (see IconFact). */
+export function OrderFact({ reference }: { reference: string | null | undefined }) {
+  return (
+    <IconFact icon={Package} label="Order">
+      <span className="font-mono text-foreground">{reference ?? "No order reference"}</span>
+    </IconFact>
+  );
+}
+export function SellerFact({ name }: { name: string }) {
+  return (
+    <IconFact icon={Store} label="Seller">
+      {name}
+    </IconFact>
+  );
+}
+export function DeliveryFact({ status }: { status: string }) {
+  return (
+    <IconFact icon={Truck} label="Delivery status">
+      {friendly(status)}
+    </IconFact>
+  );
+}
+export function CustomerFact({ name }: { name: string | null }) {
+  return (
+    <IconFact icon={UserRound} label="Customer">
+      {name ?? "Name not provided"}
+    </IconFact>
+  );
+}
+export function ReportFact({ reference }: { reference: string }) {
+  return (
+    <IconFact icon={FileText} label="Report">
+      <span className="font-mono">{reference}</span>
+    </IconFact>
+  );
+}
+export function AssigneeFact({ name }: { name: string | undefined }) {
+  return (
+    <IconFact icon={UserRoundCog} label="Assignee">
+      {name ?? "Unassigned"}
+    </IconFact>
+  );
+}
+/** "Opened Oct 21, 4:29 PM" with a clock icon; `verb` says what happened at that time. */
+export function TimeFact({ verb, at }: { verb: string; at: string }) {
+  return (
+    <IconFact icon={Clock} label={verb}>
+      {verb} {time(at)}
+    </IconFact>
   );
 }
 /** Words written by a customer or driver, set apart from staff-written text. */

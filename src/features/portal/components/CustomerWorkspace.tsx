@@ -19,6 +19,9 @@ import { cn } from "@/shared/utils";
 import { DeliveryUpdates } from "./DeliveryUpdates";
 import {
   DEMO_BANNER_TEXT,
+  OrderFact,
+  ReportFact,
+  TimeFact,
   Panel,
   PortalNav,
   PortalState,
@@ -261,13 +264,14 @@ export function CustomerWorkspace() {
                           </>
                         }
                         meta={[
-                          <span key="order" className="font-mono text-foreground">
-                            {orders.find((o) => o.id === r.delivery_job_id)?.seller_order_reference}
-                          </span>,
-                          <span key="ref" className="font-mono">
-                            {r.complaint_reference}
-                          </span>,
-                          `Submitted ${time(r.submitted_at)}`,
+                          <OrderFact
+                            key="order"
+                            reference={
+                              orders.find((o) => o.id === r.delivery_job_id)?.seller_order_reference
+                            }
+                          />,
+                          <ReportFact key="ref" reference={r.complaint_reference} />,
+                          <TimeFact key="submitted" verb="Submitted" at={r.submitted_at} />,
                         ]}
                         trailing={
                           <Button size="sm" variant="outline" onClick={() => void view(r.id)}>

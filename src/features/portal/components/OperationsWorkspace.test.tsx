@@ -66,10 +66,17 @@ it("filters the inbox from each summary tile like a button", () => {
   render(<OperationsWorkspace view="inbox" />, inTheme);
   expect(listed()).toEqual(["HIGH-OVERDUE", "MEDIUM-ASSIGNED", "LOW-FRESH"]);
   const tile = (name: RegExp) => screen.getByRole("button", { name });
-  expect(tile(/Unassigned/)).not.toHaveAttribute("aria-pressed");
+  expect(tile(/Open exceptions/)).toHaveAttribute("aria-pressed", "true");
+  expect(tile(/Unassigned/)).toHaveAttribute("aria-pressed", "false");
+  // Each number carries a one-line explanation.
+  expect(tile(/High \/ critical/)).toHaveTextContent("None critical");
+  expect(tile(/SLA breaches/)).toHaveTextContent("None due within 2h");
+  expect(tile(/Unassigned/)).toHaveTextContent("of 3 open");
 
   fireEvent.click(tile(/Unassigned/));
   expect(listed()).toEqual(["LOW-FRESH"]);
+  expect(tile(/Unassigned/)).toHaveAttribute("aria-pressed", "true");
+  expect(tile(/Open exceptions/)).toHaveAttribute("aria-pressed", "false");
   // A second click keeps the filter: tiles apply a filter, they do not toggle it.
   fireEvent.click(tile(/Unassigned/));
   expect(listed()).toEqual(["LOW-FRESH"]);

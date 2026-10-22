@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Text } from "@radix-ui/themes";
+import type { LucideIcon } from "lucide-react";
 import { Fragment, type ReactNode } from "react";
 
 import { cn } from "@/shared/utils";
@@ -126,7 +127,16 @@ export function Timeline({
 }
 
 /** Secondary facts on one wrapping gray line, separated by dots. Empty items are skipped. */
-export function MetaLine({ items, className }: { items: ReactNode[]; className?: string }) {
+export function MetaLine({
+  items,
+  separator = "dot",
+  className,
+}: {
+  items: ReactNode[];
+  /** "space" for items that carry their own icon (IconFact), so dots would be noise. */
+  separator?: "dot" | "space";
+  className?: string;
+}) {
   const shown = items.filter(
     (item) => item !== null && item !== undefined && item !== false && item !== "",
   );
@@ -136,15 +146,43 @@ export function MetaLine({ items, className }: { items: ReactNode[]; className?:
       as="div"
       size="1"
       color="gray"
-      className={cn("flex flex-wrap items-center gap-x-1.5 gap-y-0.5", className)}
+      className={cn(
+        "flex flex-wrap items-center gap-y-0.5",
+        separator === "dot" ? "gap-x-1.5" : "gap-x-4",
+        className,
+      )}
     >
       {shown.map((item, i) => (
         <Fragment key={i}>
-          {i > 0 && <span aria-hidden>·</span>}
+          {i > 0 && separator === "dot" && <span aria-hidden>·</span>}
           <span className="min-w-0 break-words">{item}</span>
         </Fragment>
       ))}
     </Text>
+  );
+}
+
+/**
+ * One labelled fact shown as icon + value (e.g. a package icon before an order reference).
+ * The label is the tooltip and is read out by screen readers, so the value never stands alone.
+ */
+export function IconFact({
+  icon: Icon,
+  label,
+  children,
+  className,
+}: {
+  icon: LucideIcon;
+  label: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span title={label} className={cn("inline-flex min-w-0 items-center gap-1", className)}>
+      <Icon className="size-3.5 shrink-0" aria-hidden />
+      <span className="sr-only">{label}: </span>
+      <span className="min-w-0 break-words">{children}</span>
+    </span>
   );
 }
 
@@ -179,7 +217,7 @@ export function RecordSummary({
             </Text>
             {badges}
           </div>
-          {meta && <MetaLine items={meta} />}
+          {meta && <MetaLine items={meta} separator="space" />}
           {children && <div className="space-y-1 pt-1">{children}</div>}
         </div>
       </div>

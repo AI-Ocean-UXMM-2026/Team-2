@@ -12,6 +12,8 @@ import {
 } from "@/shared/ui/patterns";
 import {
   DEMO_BANNER_TEXT,
+  OrderFact,
+  TimeFact,
   Panel,
   PortalNav,
   PortalState,
@@ -63,10 +65,8 @@ export function SellerWorkspace() {
                           </>
                         }
                         meta={[
-                          <span key="order" className="font-mono text-foreground">
-                            {e.order_reference}
-                          </span>,
-                          `Opened ${time(e.detected_at)}`,
+                          <OrderFact key="order" reference={e.order_reference} />,
+                          <TimeFact key="opened" verb="Opened" at={e.detected_at} />,
                         ]}
                       />
                     </article>

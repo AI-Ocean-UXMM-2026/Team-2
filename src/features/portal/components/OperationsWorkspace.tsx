@@ -1,7 +1,15 @@
 "use client";
 import Link from "next/link";
 import { Heading, Text } from "@radix-ui/themes";
-import { ArrowRight, ChevronRight, Inbox, MessageSquare } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronRight,
+  Inbox,
+  MessageSquare,
+  TimerOff,
+  TriangleAlert,
+  UserRoundX,
+} from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePortal } from "@/infrastructure/portal/use-portal";
@@ -26,7 +34,13 @@ import {
   Timeline,
 } from "@/shared/ui/patterns";
 import {
+  AssigneeFact,
+  DeliveryFact,
   DueLabel,
+  OrderFact,
+  ReportFact,
+  SellerFact,
+  TimeFact,
   Panel,
   PortalState,
   PriorityBadge,
@@ -75,6 +89,14 @@ export function OperationsWorkspace({ view }: { view: "overview" | "inbox" | "re
       </Panel>
     );
   const open = s.exceptions.filter((e) => e.status !== "RESOLVED");
+  // Context lines under the summary numbers.
+  const urgent = open.filter((e) => ["HIGH", "CRITICAL"].includes(e.priority));
+  const slas = open.map((e) => exceptionSla(e, now));
+  const breached = slas.filter((sla) => sla.breached).length;
+  const dueSoon = slas.filter((sla) => !sla.breached && sla.remainingMs <= 2 * 36e5).length;
+  const openedToday = open.filter(
+    (e) => new Date(e.detected_at).toDateString() === new Date(now).toDateString(),
+  ).length;
   const rank: Record<string, number> = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
   const rows = s.exceptions
     .filter((e) => {
@@ -111,10 +133,23 @@ export function OperationsWorkspace({ view }: { view: "overview" | "inbox" | "re
     setSla(target === "breached" ? "breached" : "");
     setAssignee(target === "unassigned" ? "unassigned" : "");
   }
+  // The tile whose preset matches the current filters exactly (search text aside) shows as selected.
+  const presetBase = status === "open" && !seller && !category && !age;
+  const shown: Focus | null = !presetBase
+    ? null
+    : !priority && !assignee && !sla
+      ? "open"
+      : priority === URGENT && !assignee && !sla
+        ? "urgent"
+        : !priority && !assignee && sla === "breached"
+          ? "breached"
+          : !priority && assignee === "unassigned" && !sla
+            ? "unassigned"
+            : null;
   // Only the inbox lists exceptions; elsewhere the tiles open the inbox with their preset.
   const tile = (f: Focus) =>
     view === "inbox"
-      ? { onClick: () => showFocus(f) }
+      ? { onClick: () => showFocus(f), selected: shown === f }
       : { href: f === "open" ? "/dashboard" : `/dashboard?focus=${f}` };
   // Categories with open exceptions get a tile (largest first); empty ones are listed in one line.
   const byCategory = Object.entries(ALL_CATEGORIES)
@@ -148,22 +183,35 @@ export function OperationsWorkspace({ view }: { view: "overview" | "inbox" | "re
         }
       />
       <StatGrid label="Summary">
-        <StatTile label="Open exceptions" value={open.length} tone="accent" {...tile("open")} />
+        <StatTile
+          label="Open exceptions"
+          value={open.length}
+          tone="accent"
+          icon={Inbox}
+          detail={`${openedToday} opened today`}
+          {...tile("open")}
+        />
         <StatTile
           label="High / critical"
-          value={open.filter((e) => ["HIGH", "CRITICAL"].includes(e.priority)).length}
-          tone="high"
+          value={urgent.length}
+          tone="urgent"
+          icon={TriangleAlert}
+          detail={`${urgent.filter((e) => e.priority === "CRITICAL").length || "None"} critical`}
           {...tile("urgent")}
         />
         <StatTile
           label="SLA breaches"
-          value={open.filter((e) => exceptionSla(e, now).breached).length}
+          value={breached}
           tone="critical"
+          icon={TimerOff}
+          detail={dueSoon ? `${dueSoon} more due within 2h` : "None due within 2h"}
           {...tile("breached")}
         />
         <StatTile
           label="Unassigned"
           value={open.filter((e) => !e.assignee_user_id).length}
+          icon={UserRoundX}
+          detail={`of ${open.length} open`}
           {...tile("unassigned")}
         />
       </StatGrid>
@@ -187,10 +235,8 @@ export function OperationsWorkspace({ view }: { view: "overview" | "inbox" | "re
                         </>
                       }
                       meta={[
-                        <span key="ref" className="font-mono text-foreground">
-                          {r.complaint_reference}
-                        </span>,
-                        `Submitted ${time(r.submitted_at)}`,
+                        <ReportFact key="ref" reference={r.complaint_reference} />,
+                        <TimeFact key="submitted" verb="Submitted" at={r.submitted_at} />,
                       ]}
                       trailing={
                         r.exception_id && (
@@ -350,11 +396,9 @@ export function OperationsWorkspace({ view }: { view: "overview" | "inbox" | "re
                             </>
                           }
                           meta={[
-                            <span key="order" className="font-mono text-foreground">
-                              {o.seller_order_reference ?? "No order reference"}
-                            </span>,
-                            sellerName,
-                            `Source: ${friendly(o.status)}`,
+                            <OrderFact key="order" reference={o.seller_order_reference} />,
+                            <SellerFact key="seller" name={sellerName} />,
+                            <DeliveryFact key="delivery" status={o.status} />,
                           ]}
                           trailing={
                             <span className="flex items-center gap-2">
@@ -375,10 +419,15 @@ export function OperationsWorkspace({ view }: { view: "overview" | "inbox" | "re
                             </Text>
                           )}
                           <MetaLine
+                            separator="space"
                             items={[
-                              `Opened ${time(e.detected_at)}`,
-                              s.staff.find((v) => v.user_id === e.assignee_user_id)?.full_name ??
-                                "Unassigned",
+                              <TimeFact key="opened" verb="Opened" at={e.detected_at} />,
+                              <AssigneeFact
+                                key="assignee"
+                                name={
+                                  s.staff.find((v) => v.user_id === e.assignee_user_id)?.full_name
+                                }
+                              />,
                             ]}
                           />
                         </RecordSummary>

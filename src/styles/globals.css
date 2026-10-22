@@ -50,6 +50,8 @@
   --color-critical-soft: var(--critical-soft);
   --color-high: var(--high);
   --color-high-soft: var(--high-soft);
+  --color-urgent: var(--urgent);
+  --color-urgent-soft: var(--urgent-soft);
   --color-medium: var(--medium);
   --color-medium-soft: var(--medium-soft);
   --color-low: var(--low);
@@ -113,11 +115,14 @@
   --sidebar-ring: var(--focus-8);
 
   /* Status colors keep fixed meanings: critical red, high crimson, medium yellow, low gray,
-     success green, info blue, simulated/demo purple. */
+     success green, info blue, simulated/demo purple. Urgent (plum) marks the combined
+     high/critical summary so it never reads as the red used for SLA breaches. */
   --critical: var(--red-11);
   --critical-soft: var(--red-a3);
   --high: var(--crimson-11);
   --high-soft: var(--crimson-a3);
+  --urgent: var(--plum-11);
+  --urgent-soft: var(--plum-a3);
   --medium: var(--yellow-11);
   --medium-soft: var(--yellow-a3);
   --low: var(--gray-11);

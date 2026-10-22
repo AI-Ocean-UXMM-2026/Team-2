@@ -29,7 +29,10 @@ import {
   Timeline,
 } from "@/shared/ui/patterns";
 import {
+  CustomerFact,
   DueLabel,
+  OrderFact,
+  SellerFact,
   Panel,
   PortalState,
   PriorityBadge,
@@ -137,12 +140,15 @@ export function ExceptionWorkspace({ id }: { id: string }) {
           }
           title={categoryLabel(ex.exception_type)}
           description={
-            <>
-              <span className="font-mono text-foreground">
-                {order.seller_order_reference ?? "No order reference"}
-              </span>{" "}
-              · {seller} · {order.recipient_name}
-            </>
+            <MetaLine
+              separator="space"
+              className="text-sm"
+              items={[
+                <OrderFact key="order" reference={order.seller_order_reference} />,
+                <SellerFact key="seller" name={seller} />,
+                <CustomerFact key="customer" name={order.recipient_name} />,
+              ]}
+            />
           }
           actions={<DueLabel sla={sla} />}
         />
