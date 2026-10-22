@@ -1,0 +1,5 @@
+# Keep LF everywhere (Prettier and ESLint expect it), including Windows checkouts.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.jpg binary
