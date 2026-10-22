@@ -1,0 +1,5 @@
+[build.environment]
+  # The Supabase publishable key is intentionally included in the browser bundle.
+  # GROQ_MODEL is a public model identifier, also used in documentation and tests.
+  # Keep scanning enabled for credentials, including GROQ_API_KEY.
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,GROQ_MODEL"
