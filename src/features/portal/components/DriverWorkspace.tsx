@@ -21,7 +21,6 @@ import {
   Timeline,
 } from "@/shared/ui/patterns";
 import {
-  DEMO_BANNER_TEXT,
   Panel,
   PortalNav,
   PortalState,
@@ -102,7 +101,6 @@ export function DriverWorkspace() {
       width="md"
       brand={<ProductMark section="Driver reporting" />}
       headerAside={<PortalNav />}
-      banner={DEMO_BANNER_TEXT}
     >
       {!s ? (
         <PortalState loading={q.isPending} error={q.error} retry={() => void q.refetch()} />

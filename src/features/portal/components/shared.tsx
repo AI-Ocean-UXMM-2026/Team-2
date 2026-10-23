@@ -288,12 +288,3 @@ export function PortalHeader({ section }: { section?: string }) {
     </header>
   );
 }
-export const DEMO_BANNER_TEXT =
-  "Hackathon demo | Fictional source-system orders and updates | Portal messages are saved in Supabase";
-export function DemoBanner() {
-  return (
-    <div className="border-b border-demo/20 bg-demo-soft px-4 py-2 text-center text-xs text-demo">
-      {DEMO_BANNER_TEXT}
-    </div>
-  );
-}

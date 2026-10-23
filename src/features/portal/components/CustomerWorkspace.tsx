@@ -18,7 +18,6 @@ import { Textarea } from "@/shared/ui/textarea";
 import { cn } from "@/shared/utils";
 import { DeliveryUpdates } from "./DeliveryUpdates";
 import {
-  DEMO_BANNER_TEXT,
   OrderFact,
   ReportFact,
   TimeFact,
@@ -115,7 +114,6 @@ export function CustomerWorkspace() {
       width="md"
       brand={<ProductMark section="Customer support" />}
       headerAside={<PortalNav />}
-      banner={DEMO_BANNER_TEXT}
     >
       <div className="space-y-6">
         {!s ? (

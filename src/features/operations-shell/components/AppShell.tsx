@@ -105,9 +105,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             );
           })}
         </header>
-        <div className="border-b border-demo/20 bg-demo-soft px-4 py-1.5 text-center text-xs text-demo md:px-8">
-          Hackathon demo | Fictional source-system data | Updates appear in portals.
-        </div>
         <div className="px-4 md:hidden"></div>
         <main className="flex-1 px-4 py-6 md:px-8">{children}</main>
       </div>

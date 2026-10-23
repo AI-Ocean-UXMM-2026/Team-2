@@ -11,7 +11,6 @@ import {
   SiteShell,
 } from "@/shared/ui/patterns";
 import {
-  DEMO_BANNER_TEXT,
   OrderFact,
   TimeFact,
   Panel,
@@ -30,7 +29,6 @@ export function SellerWorkspace() {
       width="lg"
       brand={<ProductMark section="Seller updates" />}
       headerAside={<PortalNav />}
-      banner={DEMO_BANNER_TEXT}
     >
       <div className="space-y-6">
         {!s ? (
