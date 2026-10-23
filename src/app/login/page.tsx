@@ -18,9 +18,6 @@ export default async function Login({
         )}
         <CustomerAccountForm />
         <nav aria-label="Portals" className="flex flex-wrap gap-4 border-t pt-4 text-sm">
-          <Link href="/staff-login" className="text-primary hover:underline">
-            Staff password sign-in
-          </Link>
           <Link href="/customer/complaint" className="text-primary hover:underline">
             Customer portal
           </Link>
