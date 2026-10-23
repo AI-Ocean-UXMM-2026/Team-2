@@ -1,10 +1,11 @@
+import { isSameOriginRequest } from "@/infrastructure/portal/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { authenticatedClient } from "@/infrastructure/supabase/session.server";
 import { draftApology } from "@/infrastructure/ai/apology.server";
 export async function POST(request: Request) {
   const headers = { "Cache-Control": "private, no-store" };
-  if (request.headers.get("origin") !== new URL(request.url).origin)
+  if (!isSameOriginRequest(request))
     return NextResponse.json({ error: "Same-origin request required" }, { status: 403, headers });
   try {
     const { client, user } = await authenticatedClient();

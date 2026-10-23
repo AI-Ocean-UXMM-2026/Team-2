@@ -1,3 +1,4 @@
+import { isSameOriginRequest } from "@/infrastructure/portal/same-origin";
 import {
   analyticsStaff,
   loadAnalytics,
@@ -8,7 +9,7 @@ import { summarizeAnalytics } from "@/infrastructure/ai/analytics.server";
 // Best-effort per-process throttle; not a distributed production quota.
 const recent = new Map<string, number>();
 export async function POST(request: Request) {
-  if (request.headers.get("origin") !== new URL(request.url).origin)
+  if (!isSameOriginRequest(request))
     return analyticsFailure(new AnalyticsError("Same-origin request required", 403));
   try {
     const { client, user } = await analyticsStaff();

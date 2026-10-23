@@ -1,3 +1,4 @@
+import { isSameOriginRequest } from "@/infrastructure/portal/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { authenticatedClient } from "@/infrastructure/supabase/session.server";
@@ -91,7 +92,7 @@ const schema = z.object({
   input: z.record(z.unknown()).default({}),
 });
 export async function POST(request: Request) {
-  if (request.headers.get("origin") !== new URL(request.url).origin)
+  if (!isSameOriginRequest(request))
     return NextResponse.json({ error: "Same-origin request required" }, { status: 403, headers });
   try {
     const { client } = await authenticatedClient();
