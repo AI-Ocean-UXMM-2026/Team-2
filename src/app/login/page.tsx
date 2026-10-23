@@ -1,5 +1,4 @@
 import { CustomerAccountForm } from "@/features/customer-auth/components/CustomerAccountForm";
-import Link from "next/link";
 import { Notice, ProductMark, SiteShell } from "@/shared/ui/patterns";
 export const metadata = { title: "Sign in" };
 export default async function Login({
@@ -17,25 +16,6 @@ export default async function Login({
           </Notice>
         )}
         <CustomerAccountForm />
-        <nav aria-label="Portals" className="flex flex-wrap gap-4 border-t pt-4 text-sm">
-          <Link href="/customer/complaint" className="text-primary hover:underline">
-            Customer portal
-          </Link>
-          <Link href="/overview" className="text-primary hover:underline">
-            Operations
-          </Link>
-          <Link href="/seller" className="text-primary hover:underline">
-            Seller portal
-          </Link>
-          <Link href="/driver" className="text-primary hover:underline">
-            Driver portal
-          </Link>
-          {process.env.NODE_ENV === "development" && (
-            <Link href="/driver-test-login" className="text-primary hover:underline">
-              Driver test sign-in
-            </Link>
-          )}
-        </nav>
       </div>
     </SiteShell>
   );
